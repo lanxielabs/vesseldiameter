@@ -24,7 +24,7 @@ y = [indx_min:indx_max];
 f1 = c(1)*exp(-((y-c(2))/c(3)).^2)+c(4).*exp(-((y-c(5))/c(6)).^2);%+...
 %c(7).*exp(-((y-c(8))/c(9)).^2);
 
-plot(f(x))
+%plot(f(x))
 
 indx = find(abs(f1 - half)<2e-2);
 

@@ -90,48 +90,37 @@ SCt = read_subimage(files,-1,-1,1:numframes);
 SC1 = SCt(:,:,1);
 SC1 = SC1';
 %if isempty(pos)
-    
-    pos = drawROIrects(SC1,[0.02 0.4]);
+% Instructions: The longer sides of the rectangles should be parallel to the vessel.  
+pos = drawROIrects(SC1,[0.02 0.4]);
 %end
 
 
 zlength = size(pos,3);
 d1 = zeros(trials,len_trials,zlength);
 
-for trial= 1:trials
-    SCt = read_subimage(files,-1,-1,[start_trial(trial):start_trial(trial)+len_trials-1]);
+for iter_trial= 1:trials
+    SCt = read_subimage(files,-1,-1,[start_trial(iter_trial):start_trial(iter_trial)+len_trials-1]);
     for frame = 1:len_trials
-    SC2 = SCt(:,:,frame);
-            SC2 = SC2';
-            %imshow(SC2,[0.02 0.4]);
-            for i=1:zlength
-                
+        SC2 = SCt(:,:,frame);
+        SC2 = SC2';
+        %imshow(SC2,[0.02 0.4]);
+        for i=1:zlength
             v1 = pos(:,:,i);
-            
             count1 = 1;
-            
             dist = pdist(v1);
             if dist(2)>dist(1)
-            
                 if v1(2,1)<v1(3,1)
-                start1 = v1(2,1);
-                finish1 = v1(3,1);
+                    start1 = v1(2,1);
+                    finish1 = v1(3,1);
                 else 
-                start1 = v1(3,1);
-                finish1 = v1(2,1);
+                    start1 = v1(3,1);
+                    finish1 = v1(2,1);
                 end
-            
-            
                 for t =start1:1:finish1
                     c1 = improfile(SC2,[t t+v1(1,1)-v1(2,1)],[v1(2,2)+(t-v1(2,1))/(v1(3,1)-v1(2,1))*(v1(3,2)-v1(2,2)) v1(1,2)+(t-v1(2,1))/(v1(3,1)-v1(2,1))*(v1(3,2)-v1(2,2))]);
                     tmp1(count1) = calculatedistance(c1);
                     count1 = count1+1;
                 end
-            
-            
-           
-            
-                
             else
                 if v1(1,1)<v1(2,1)
                     start1 = v1(2,1);
@@ -147,19 +136,19 @@ for trial= 1:trials
                 end
                
             end
-            d1(trial,frame,i)=mean(tmp1);
-            end    
-        
-        
+            d1(iter_trial,frame,i)=mean(tmp1);
+        end    
     end
-    
-    
-    
-    
-    
 end
 vec_width1 = mean(d1,1);
+numframe = [0:len_trials];
+for i = 1:zlength
+    plot(numframe,vec_width1(:,i),'DisplayName',['Rect_' num2str(i)]);
+    hold on;
+end
+legend;
 
+    
 
 %[vec_width1,time_vec] = calculatediameter(file_sc,trials,len_trials,pos);
 
